@@ -11,15 +11,15 @@ export const AuthContext = createContext({
   user: null,
   token: null,
   loading: true,
-  setLoading: () => {},
-  login: () => {},
-  logout: () => {},
+  setLoading: () => { },
+  login: () => { },
+  logout: () => { },
 });
 
 const AuthContextProvider = ({ children }) => {
   const initState = {
     user: localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user"))
+      ? localStorage.getItem("user")
       : null,
     token: localStorage.getItem("token") || null,
   };

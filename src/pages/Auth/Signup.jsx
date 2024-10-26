@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import AuthTemp from "../../components/layouts/AuthTemp";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -12,10 +14,26 @@ export default function Signup() {
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    if (formData.email && formData.password !== "") {
+      try {
+        const res = await axiosInstance.post("/auth/register", {
+          name: formData.username,
+          email: formData.email,
+          password: formData.password,
+        });
+        if (res.status === 200) {
+          login(res.data.name, res.data.accessToken);
+          navigate("/");
+        }
+      } catch (error) {
+        alert("Invalid credentials");
+        console.log(error)
+      }
+    }
   };
 
   return (
